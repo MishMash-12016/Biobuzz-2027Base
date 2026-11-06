@@ -82,12 +82,11 @@ public class DriveTrain {
         backRight.setPower(backRightPower);
     }
 
-
     public void fieldOrientedDrive(Gamepad gamepad) {
-
-        double y = gamepad.left_stick_y;
-        double x = -gamepad.left_stick_x;
-        double rx = gamepad.right_stick_x;
+        double y,x,rx;
+        if (Math.abs(gamepad.left_stick_y) > 0.1)  {y = gamepad.left_stick_y;}    else {y = 0;}
+        if (Math.abs(gamepad.left_stick_x) > 0.1)  {x = -gamepad.left_stick_x;}    else {x = 0;}
+        if (Math.abs(gamepad.right_stick_x)> 0.1)  {rx = gamepad.right_stick_x;}  else {rx = 0;}
 
         // Get the current robot heading from the Pinpoint in radians
         double botHeading = pinpoint.getPosition().getHeading(AngleUnit.RADIANS);
@@ -112,18 +111,23 @@ public class DriveTrain {
         pinpoint.update();
     }
 
+
     /**
      * Returns the current Pose2D position and heading from the Pinpoint localizer.
      */
     public Pose2D getPosition() {
         return pinpoint.getPosition();
     }
-
     /**
      * Resets the Pinpoint position and IMU heading back to zero.
      */
     public void resetPose() {
         pinpoint.resetPosAndIMU();
     }
+
+    public void resetHeading(){
+        pinpoint.setHeading(0,AngleUnit.RADIANS);
+    }
+
 
 }

@@ -32,6 +32,7 @@ public class ManualDrive extends LinearOpMode {
 
         while (opModeIsActive()) {
             dt.fieldOrientedDrive(gamepad1);
+            if (gamepad1.options){dt.resetHeading();}
 
 
             if (gamepad1.a){
