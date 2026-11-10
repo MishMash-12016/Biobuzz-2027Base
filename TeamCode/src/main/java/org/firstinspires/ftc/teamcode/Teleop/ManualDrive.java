@@ -27,7 +27,6 @@ public class ManualDrive extends LinearOpMode {
         transfer.init(hardwareMap);
 
 
-
         waitForStart();
 
         while (opModeIsActive()) {
