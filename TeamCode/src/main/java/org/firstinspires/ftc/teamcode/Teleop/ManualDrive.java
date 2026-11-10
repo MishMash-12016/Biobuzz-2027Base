@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
 import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 
 @TeleOp
@@ -20,11 +21,13 @@ public class ManualDrive extends LinearOpMode {
         Intake intake = new Intake();
         Shooter shooter = new Shooter();
         Transfer transfer = new Transfer();
+        Stopper stopper = new Stopper();
 
         dt.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
         transfer.init(hardwareMap);
+        stopper.init(hardwareMap);
 
 
         waitForStart();
@@ -34,18 +37,23 @@ public class ManualDrive extends LinearOpMode {
             if (gamepad1.options){dt.resetHeading();}
 
 
-            if (gamepad1.a){
+            if (gamepad1.b){
                 intake.setIntake(1);
                 transfer.setPower(1);
-            }
-            else {
+            } else {
                 intake.setIntake(0);
                 transfer.setPower(0);
             }
-            if (gamepad1.b){
+
+            if (gamepad1.a){
                 shooter.setShooter(0.58);
-            }
+            } if(gamepad1.y) {shooter.setShooter(0);}
+
+            if (gamepad1.dpad_up){stopper.open();}
+            if(gamepad1.dpad_down){stopper.close();}
+
             telemetry.addData("ang", dt.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
+            telemetry.addData("stoper", stopper.getPosition());
             telemetry.update();
         }
     }
