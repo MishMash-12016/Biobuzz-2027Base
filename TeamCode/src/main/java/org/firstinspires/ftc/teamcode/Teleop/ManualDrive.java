@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -22,7 +23,6 @@ public class ManualDrive extends LinearOpMode {
         Shooter shooter = new Shooter();
         Transfer transfer = new Transfer();
         Stopper stopper = new Stopper();
-
         dt.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
@@ -45,9 +45,20 @@ public class ManualDrive extends LinearOpMode {
                 transfer.setPower(0);
             }
 
-            if (gamepad1.a){
-                shooter.setShooter(0.58);
-            } if(gamepad1.y) {shooter.setShooter(0);}
+            if (gamepad1.a) {
+                //in the dashboard
+                shooter.SetVelocity(1);
+            } else {
+                shooter.SetVelocity(0);
+
+            }
+
+            if(gamepad1.x) {
+                shooter.setPowerByDashboard();
+            } else {
+                shooter.setShooter(0);
+            }
+            shooter.printVelocity();
 
             if (gamepad1.dpad_up){stopper.open();}
             if(gamepad1.dpad_down){stopper.close();}
