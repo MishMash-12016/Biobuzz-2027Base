@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
@@ -17,51 +16,66 @@ public class Shooter extends SubsystemBase {
     private DcMotorEx ShooterR;
     private FtcDashboard Dashboard;
 
-    public static double KP = 0.1;
-    public static double KF = 7000;
-    public static double KI = 0.001;
-    public static double KD = 0;
-    public static double Power = 0.1;
-    public static double Velocity = 20;
+    // Tunable via FTC Dashboard (must be public static for @Config)
+    public static double KP = 1;
+    public static double KF = 1.5;
+    public static double targetVelocity = 1500; // ticks/sec — tune this on the dashboard
 
-    public void init(HardwareMap hardwareMap ) {
+    public static double Ticks = 28;
+    public static double gearRatio = 1;
+
+    public void init(HardwareMap hardwareMap) {
         Dashboard = FtcDashboard.getInstance();
-        ShooterL = hardwareMap.get(DcMotorImplEx.class, "ShooterL");
+        ShooterL = hardwareMap.get(DcMotorEx.class, "ShooterL");
         ShooterR = hardwareMap.get(DcMotorEx.class, "ShooterR");
 
+        // ShooterL is PIDF-controlled with encoder
         ShooterL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        ShooterR.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        ShooterR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        // TODO Change
+        // TODO Change directions if needed
         ShooterL.setDirection(DcMotorSimple.Direction.FORWARD);
         ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        ShooterL.setVelocityPIDFCoefficients(KP,KI,KD,KF);
+        applyPIDF();
     }
 
-
-    //Velocity in rad / S
-    public void SetVelocity (double velocity){
-//        PIDFCoefficients pidParameters = new PIDFCoefficients(KP,KI,KD,KF);
-        if(velocity != 0) {
-            ShooterL.setVelocity(10000);
-        } else {
-            ShooterL.setVelocity(0);
-        }
+    /** Applies the current KP/KF values to ShooterL (PIDF-controlled). */
+    private void applyPIDF() {
+        PIDFCoefficients pidParameters = new PIDFCoefficients(KP, 0, 0, KF);
+        ShooterL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidParameters);
     }
-    public void printVelocity(){
-        TelemetryPacket velocityPacket= new TelemetryPacket();
-        velocityPacket.put("velocity left", ShooterL.getVelocity());
-        velocityPacket.put("L power", ShooterL.getPower());
-        velocityPacket.put("pid",ShooterL.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
+
+    /**
+     * Spins ShooterL to the tunable targetVelocity using PIDF.
+     * Call update() every loop to keep ShooterR mirroring ShooterL's power.
+     */
+    public void spinUp() {
+        ShooterL.setVelocity(targetVelocity);
+    }
+
+    /**
+     * Must be called every loop iteration.
+     * Mirrors ShooterL's current power output to ShooterR (since ShooterR has no encoder).
+     */
+    public void update() {
+        ShooterR.setPower(ShooterL.getPower());
+    }
+
+    /** Stops both shooter motors. */
+    public void stop() {
+        ShooterL.setVelocity(0);
+        ShooterR.setPower(0);
+    }
+
+    /** Sends velocity and PIDF telemetry to FTC Dashboard. */
+    public void printVelocity() {
+        TelemetryPacket velocityPacket = new TelemetryPacket();
+        velocityPacket.put("ShooterL velocity (ticks/s)", ShooterL.getVelocity());
+        velocityPacket.put("ShooterL RPM", (ShooterL.getVelocity() / Ticks) * 60 / gearRatio);
+        velocityPacket.put("ShooterR power (mirrored)", ShooterR.getPower());
+        velocityPacket.put("Target velocity (ticks/s)", targetVelocity);
+        velocityPacket.put("PIDF", ShooterL.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
         Dashboard.sendTelemetryPacket(velocityPacket);
-    }
-    public void setShooter(double Power){
-        ShooterL.setPower(Power);
-        ShooterR.setPower(Power);
-    }
-
-    public void setPowerByDashboard(){
-        setShooter(Power);
     }
 }

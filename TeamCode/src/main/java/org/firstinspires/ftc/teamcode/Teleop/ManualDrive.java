@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
 import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 
 @TeleOp
+@Config
 public class ManualDrive extends LinearOpMode {
 
     @Override
@@ -30,14 +31,15 @@ public class ManualDrive extends LinearOpMode {
         stopper.init(hardwareMap);
 
 
+
         waitForStart();
 
         while (opModeIsActive()) {
             dt.fieldOrientedDrive(gamepad1);
-            if (gamepad1.options){dt.resetHeading();}
+            if (gamepad1.options) { dt.resetHeading(); }
 
-
-            if (gamepad1.b){
+            // Intake + Transfer
+            if (gamepad1.b) {
                 intake.setIntake(1);
                 transfer.setPower(1);
             } else {
@@ -45,26 +47,23 @@ public class ManualDrive extends LinearOpMode {
                 transfer.setPower(0);
             }
 
+            // Shooter — hold A to spin up to targetVelocity (set in Dashboard)
             if (gamepad1.a) {
-                //in the dashboard
-                shooter.SetVelocity(1);
+                shooter.spinUp();
             } else {
-                shooter.SetVelocity(0);
-
+                shooter.stop();
             }
 
-            if(gamepad1.x) {
-                shooter.setPowerByDashboard();
-            } else {
-                shooter.setShooter(0);
-            }
+            // Keep ShooterR mirroring ShooterL's power every loop
+            shooter.update();
+
+            // Stopper
+            if (gamepad1.dpad_up) { stopper.open(); }
+            if (gamepad1.dpad_down) { stopper.close(); }
+
             shooter.printVelocity();
-
-            if (gamepad1.dpad_up){stopper.open();}
-            if(gamepad1.dpad_down){stopper.close();}
-
             telemetry.addData("ang", dt.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
-            telemetry.addData("stoper", stopper.getPosition());
+            telemetry.addData("stopper", stopper.getPosition());
             telemetry.update();
         }
     }
