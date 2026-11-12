@@ -10,19 +10,28 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
+
+
 @Config
+
 public class Shooter extends SubsystemBase {
+
     private DcMotorEx ShooterL;
     private DcMotorEx ShooterR;
     private FtcDashboard Dashboard;
 
-    // Tunable via FTC Dashboard (must be public static for @Config)
-    public static double KP = 1;
-    public static double KF = 1.5;
-    public static double targetVelocity = 1500; // ticks/sec — tune this on the dashboard
+    // Tunable via FTC Dashboard (must be public static double primitive)
+
+   public static double KP = 1;
+    public static double KI = 1;
+    public static double KD = 1;
+    public static double KF = 1;
+
+    public static double targetVelocity = 1000; // ticks/sec — tune this on the dashboard
 
     public static double Ticks = 28;
     public static double gearRatio = 1;
+
 
     public void init(HardwareMap hardwareMap) {
         Dashboard = FtcDashboard.getInstance();
@@ -30,39 +39,36 @@ public class Shooter extends SubsystemBase {
         ShooterR = hardwareMap.get(DcMotorEx.class, "ShooterR");
 
         // ShooterL is PIDF-controlled with encoder
-        ShooterL.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        ShooterL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         ShooterR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        // TODO Change directions if needed
         ShooterL.setDirection(DcMotorSimple.Direction.FORWARD);
         ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         applyPIDF();
     }
 
-    /** Applies the current KP/KF values to ShooterL (PIDF-controlled). */
-    private void applyPIDF() {
-        PIDFCoefficients pidParameters = new PIDFCoefficients(KP, 0, 0, KF);
+    /** Applies the current KP/KI/KD/KF values to ShooterL */
+    public void applyPIDF() {
+        PIDFCoefficients pidParameters = new PIDFCoefficients(KP, KI, KD, KF);
         ShooterL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidParameters);
     }
 
     /**
-     * Spins ShooterL to the tunable targetVelocity using PIDF.
-     * Call update() every loop to keep ShooterR mirroring ShooterL's power.
+     * Checks for dynamic PIDF gain updates from FTC Dashboard and syncs power to ShooterR.
      */
-    public void spinUp() {
-        ShooterL.setVelocity(targetVelocity);
-    }
-
-    /**
-     * Must be called every loop iteration.
-     * Mirrors ShooterL's current power output to ShooterR (since ShooterR has no encoder).
-     */
-    public void update() {
+    @Override
+    public void periodic() {
         ShooterR.setPower(ShooterL.getPower());
     }
 
-    /** Stops both shooter motors. */
+    /** Spins ShooterL to the current targetVelocity configured on FTC Dashboard. */
+    public void spin() {
+        ShooterL.setVelocity(targetVelocity);
+        applyPIDF();
+    }
+
+    /** Stops both shooter motors without resetting targetVelocity. */
     public void stop() {
         ShooterL.setVelocity(0);
         ShooterR.setPower(0);
@@ -77,5 +83,6 @@ public class Shooter extends SubsystemBase {
         velocityPacket.put("Target velocity (ticks/s)", targetVelocity);
         velocityPacket.put("PIDF", ShooterL.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
         Dashboard.sendTelemetryPacket(velocityPacket);
+        Dashboard.updateConfig();
     }
 }
