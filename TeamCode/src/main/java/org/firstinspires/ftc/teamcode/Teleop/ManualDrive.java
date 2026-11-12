@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.ShooterPARAM;
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
@@ -49,14 +48,13 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // Shooter Trigger & Emergency Stop Control
-            if (gamepad1.right_trigger > 0.1) {
+            if (gamepad1.right_trigger < 0.1 ){
                 // Trigger pressed: Spin up using targetVelocity and active PIDF
                 shooter.spin();
-            } else if (gamepad1.a) {
-                // Button A pressed: Force stop shooter
-                shooter.stop();
-            } else {
-                // Default state: Stop shooter when trigger is released
+            }
+
+
+            if (gamepad1.x){
                 shooter.stop();
             }
 
@@ -72,17 +70,11 @@ public class ManualDrive extends LinearOpMode {
 
             // Always update subsystem periodic logic (syncs dynamic PIDF tuning & motor mirroring)
 
-            FtcDashboard.getInstance().updateConfig();
             // Telemetry & Dashboard telemetry output
             //shooter.printVelocity();
-            telemetry.addData("Kp", ShooterPARAM.KP);
-            telemetry.addData("Ki",ShooterPARAM.KI);
-            telemetry.addData("Kd",ShooterPARAM.KD);
-            telemetry.addData("Kf",ShooterPARAM.KF);
-            telemetry.addData("TargetVel", ShooterPARAM.targetVelocity);
+
             telemetry.addData("ang", dt.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
             telemetry.addData("stopper", stopper.getPosition());
-            telemetry.addData("Current KP in Code", ShooterPARAM.KP);
             telemetry.update();
         }
     }
