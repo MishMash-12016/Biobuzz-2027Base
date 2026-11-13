@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 
@@ -17,13 +18,14 @@ import com.seattlesolvers.solverslib.controller.PIDFController;
 public class Shooter extends SubsystemBase {
     private DcMotorEx ShooterL;
     private DcMotorEx ShooterR;
+    private VoltageSensor voltageSensor;
 
     private PIDFController pidController;
 
     private FtcDashboard Dashboard;
 
     // Tunable via FTC Dashboard (must be public static double primitive)
-
+    public static double IdealVoltage = 14;
     public static double KP = 0.01;
     public static double KI = 0;
     public static double KD = 0;
@@ -49,6 +51,7 @@ public class Shooter extends SubsystemBase {
         ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         pidController = new PIDFController(KP, KI, KD, KF);
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
     }
@@ -59,10 +62,17 @@ public class Shooter extends SubsystemBase {
         pidController.setI(KI);
         pidController.setD(KD);
         pidController.setF(KF);
-
         pidController.setSetPoint(targetVelocity);
 
-        ShooterL.setPower(pidController.calculate(ShooterL.getVelocity()));
+        // חישוב פלט ה-PIDF (שכבר כולל בתוכו את ה-F והמהירות)
+        double pidfPower = pidController.calculate(ShooterL.getVelocity());
+
+// הכפלת ההספק בתיקון המתח של הבטריה
+        double voltageRatio = IdealVoltage / voltageSensor.getVoltage();
+        double power = pidfPower * voltageRatio;
+
+// שליחת ההספק לשני המנועים (מנוע ימין מעתיק את שמאל)
+        ShooterL.setPower(power);
         ShooterR.setPower(ShooterL.getPower());
 
     }
