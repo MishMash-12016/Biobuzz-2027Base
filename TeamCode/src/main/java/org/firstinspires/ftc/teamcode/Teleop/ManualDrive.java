@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
@@ -15,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 @TeleOp
 @Config
 public class ManualDrive extends LinearOpMode {
+
 
     @Override
     public void runOpMode() {
@@ -29,6 +32,8 @@ public class ManualDrive extends LinearOpMode {
         shooter.init(hardwareMap);
         transfer.init(hardwareMap);
         stopper.init(hardwareMap);
+
+        telemetry = new MultipleTelemetry(telemetry , FtcDashboard.getInstance().getTelemetry());
 
         waitForStart();
 
@@ -58,8 +63,6 @@ public class ManualDrive extends LinearOpMode {
                 shooter.stop();
             }
 
-
-
             // Stopper
             if (gamepad1.dpad_up) {
                 stopper.open();
@@ -70,11 +73,10 @@ public class ManualDrive extends LinearOpMode {
 
             // Always update subsystem periodic logic (syncs dynamic PIDF tuning & motor mirroring)
 
-            // Telemetry & Dashboard telemetry output
-            //shooter.printVelocity();
+//             Telemetry & Dashboard telemetry output
+            shooter.printVelocity();
 
-            telemetry.addData("ang", dt.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
-            telemetry.addData("stopper", stopper.getPosition());
+            telemetry.addData("Shooter Velocity" , Shooter.targetVelocity);
             telemetry.update();
         }
     }

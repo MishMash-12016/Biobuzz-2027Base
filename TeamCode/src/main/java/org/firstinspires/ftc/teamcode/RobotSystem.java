@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Subsystem.ArmExemple;
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
@@ -21,7 +20,7 @@ public class RobotSystem {
     public Shooter shooter;
     public Stopper stopper;
     public Transfer transfer;
-    public Follower follower;
+//    public Follower follower;
 
     public FtcDashboard ftcDashboard;
 
