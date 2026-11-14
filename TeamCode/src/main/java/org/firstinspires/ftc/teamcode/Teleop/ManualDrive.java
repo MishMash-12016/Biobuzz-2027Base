@@ -45,11 +45,11 @@ public class ManualDrive extends LinearOpMode {
 
             // Intake + Transfer
             if (gamepad1.b) {
-                intake.setIntake(1);
-                transfer.setPower(1);
+                intake.IntakeRuning();
+                transfer.TransferRunning();
             } else {
-                intake.setIntake(0);
-                transfer.setPower(0);
+                intake.IntakeStop();
+                transfer.TransferStop();
             }
 
             // Shooter Trigger & Emergency Stop Control

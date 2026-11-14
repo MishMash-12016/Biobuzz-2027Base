@@ -6,12 +6,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Config
 @TeleOp
-public class Test1 extends LinearOpMode {
+public class DashboardTest extends LinearOpMode {
 
 
     public static double Test = 0;
