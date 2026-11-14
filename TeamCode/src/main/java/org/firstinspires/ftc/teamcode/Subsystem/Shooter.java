@@ -30,11 +30,8 @@ public class Shooter extends SubsystemBase {
     public static double KI = 0;
     public static double KD = 0;
     public static double KF = 0.000356;
-
+    public static double KS = 0;
     public static double targetVelocity = 1500; // ticks/sec — tune this on the dashboard
-
-    public static double Ticks = 28;
-    public static double gearRatio = 1;
 
 
     public void init(HardwareMap hardwareMap) {
@@ -56,7 +53,7 @@ public class Shooter extends SubsystemBase {
 
     }
 
-    /** Applies the current KP/KI/KD/KF values to ShooterL */
+    /** Applies the current KP/KI/KD/KF/KS values to ShooterL */
     public void applyPIDF() {
         pidController.setP(KP);
         pidController.setI(KI);
@@ -68,8 +65,7 @@ public class Shooter extends SubsystemBase {
         double pidfPower = pidController.calculate(ShooterL.getVelocity());
 
 // הכפלת ההספק בתיקון המתח של הבטריה
-        double voltageRatio = IdealVoltage / voltageSensor.getVoltage();
-        double power = pidfPower * voltageRatio;
+        double power = (KS + pidfPower) * IdealVoltage / voltageSensor.getVoltage();
 
 // שליחת ההספק לשני המנועים (מנוע ימין מעתיק את שמאל)
         ShooterL.setPower(power);
@@ -79,7 +75,7 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Checks for dynamic PIDF gain updates from FTC Dashboard and syncs power to ShooterR.
-     */
+     * */
 
     /** Spins ShooterL to the current targetVelocity configured on FTC Dashboard. */
     public void spin() {
