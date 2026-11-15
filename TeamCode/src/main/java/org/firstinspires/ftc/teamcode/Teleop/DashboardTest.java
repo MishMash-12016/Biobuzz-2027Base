@@ -18,7 +18,7 @@ public class DashboardTest extends LinearOpMode {
     private DcMotorEx Intake;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode()  {
         Intake = hardwareMap.get(DcMotorEx.class, "intake");
 
         telemetry = new MultipleTelemetry(telemetry , FtcDashboard.getInstance().getTelemetry());

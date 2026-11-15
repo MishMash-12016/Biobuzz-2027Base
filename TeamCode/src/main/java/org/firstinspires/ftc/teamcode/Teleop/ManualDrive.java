@@ -53,7 +53,7 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // Shooter Trigger & Emergency Stop Control
-            if (gamepad1.right_trigger < 0.1 ){
+            if (gamepad1.right_trigger < 0.5 ){
                 // Trigger pressed: Spin up using targetVelocity and active PIDF
                 shooter.spin();
             }

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
@@ -21,7 +20,6 @@ public class RobotSystem {
     public Transfer transfer;
 //    public Follower follower;
 
-    public FtcDashboard ftcDashboard;
 
     public void init(HardwareMap hardwareMap) {
         driveTrain = new DriveTrain();
@@ -34,6 +32,7 @@ public class RobotSystem {
         shooter.init(hardwareMap);
 
         stopper = new Stopper();
+        stopper.init(hardwareMap);
 
         transfer = new Transfer();
         transfer.init(hardwareMap);
