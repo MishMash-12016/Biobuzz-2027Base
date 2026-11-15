@@ -12,6 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class DriveTrain extends SubsystemBase {
+    public static double lastHeading;
+
     private DcMotor frontLeft;
     private DcMotor frontRight;
     private DcMotor backLeft;
@@ -20,24 +22,28 @@ public class DriveTrain extends SubsystemBase {
 
     public void init(HardwareMap hardwareMap) {
         // Initialize motors
-        frontLeft = hardwareMap.get(DcMotor.class, "fl");
+        frontLeft = hardwareMap.get(DcMotor.class,  "fl");
         frontRight = hardwareMap.get(DcMotor.class, "fr");
-        backLeft = hardwareMap.get(DcMotor.class, "bl");
-        backRight = hardwareMap.get(DcMotor.class, "br");
+        backLeft = hardwareMap.get(DcMotor.class,   "bl");
+        backRight = hardwareMap.get(DcMotor.class,  "br");
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        if (lastHeading != 0.0) {
+            pinpoint.setHeading(lastHeading, AngleUnit.DEGREES);
+            lastHeading = 0.0;
+        }
+
         configurePinpoint();
 
         // TODO Change
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
     }
     public void configurePinpoint() {
         // Set odometry pod offsets relative to the tracking center (in millimeters)
@@ -127,8 +133,6 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void resetHeading(){
-        pinpoint.setHeading(0,AngleUnit.RADIANS);
+        pinpoint.setHeading(0, AngleUnit.RADIANS);
     }
-
-
 }

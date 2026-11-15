@@ -17,8 +17,6 @@ import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 @TeleOp
 @Config
 public class ManualDrive extends LinearOpMode {
-
-
     @Override
     public void runOpMode() {
         DriveTrain dt = new DriveTrain();
