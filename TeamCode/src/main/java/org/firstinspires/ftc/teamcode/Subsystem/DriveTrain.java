@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -11,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-public class DriveTrainTele extends SubsystemBase {
+public class DriveTrain extends SubsystemBase {
     public static double lastHeading;
 
     private DcMotor frontLeft;
@@ -19,6 +21,8 @@ public class DriveTrainTele extends SubsystemBase {
     private DcMotor backLeft;
     private DcMotor backRight;
     public GoBildaPinpointDriver pinpoint;
+
+    private FtcDashboard Dashboard;
 
     public void init(HardwareMap hardwareMap) {
         // Initialize motors
@@ -91,8 +95,8 @@ public class DriveTrainTele extends SubsystemBase {
 
     public void fieldOrientedDrive(Gamepad gamepad) {
         double y,x,rx;
-        if (Math.abs(gamepad.left_stick_y) > 0.1)  {y = gamepad.left_stick_y;}    else {y = 0;}
-        if (Math.abs(gamepad.left_stick_x) > 0.1)  {x = -gamepad.left_stick_x;}    else {x = 0;}
+        if (Math.abs(gamepad.left_stick_y) > 0.1)  {y = -gamepad.left_stick_y;}   else {y = 0;}
+        if (Math.abs(gamepad.left_stick_x) > 0.1)  {x =  gamepad.left_stick_x;}   else {x = 0;}
         if (Math.abs(gamepad.right_stick_x)> 0.1)  {rx = gamepad.right_stick_x;}  else {rx = 0;}
 
         // Get the current robot heading from the Pinpoint in radians
@@ -134,5 +138,12 @@ public class DriveTrainTele extends SubsystemBase {
 
     public void resetHeading(){
         pinpoint.setHeading(0, AngleUnit.RADIANS);
+    }
+
+    public void locationPacket() {
+        TelemetryPacket locationPacket = new TelemetryPacket();
+       locationPacket.put("Field Location" ,pinpoint.getPosition());
+        Dashboard.sendTelemetryPacket(locationPacket);
+        Dashboard.updateConfig();
     }
 }

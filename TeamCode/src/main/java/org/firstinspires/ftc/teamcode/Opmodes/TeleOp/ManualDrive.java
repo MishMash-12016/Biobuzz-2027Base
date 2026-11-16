@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Subsystem.DriveTrainTele;
+import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 public class ManualDrive extends LinearOpMode {
     @Override
     public void runOpMode() {
-        DriveTrainTele dt = new DriveTrainTele();
+        DriveTrain dt = new DriveTrain();
         Intake intake = new Intake();
         Shooter shooter = new Shooter();
         Transfer transfer = new Transfer();
@@ -49,11 +49,10 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // Shooter Trigger & Emergency Stop Control
-            if (gamepad1.right_trigger < 0.5 ){
+            if (gamepad1.right_trigger_pressed ){
                 // Trigger pressed: Spin up using targetVelocity and active PIDF
                 shooter.spin();
             }
-
 
             if (gamepad1.x){
                 shooter.stop();
@@ -73,6 +72,8 @@ public class ManualDrive extends LinearOpMode {
             shooter.printVelocity();
 
             telemetry.addData("Shooter Velocity" , Shooter.targetVelocity);
+            telemetry.addData("X",gamepad1.left_stick_x);
+            telemetry.addData("Y",gamepad1.left_stick_y);
             telemetry.update();
         }
     }
