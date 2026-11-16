@@ -45,7 +45,7 @@ import org.firstinspires.ftc.teamcode.Librarys.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.Librarys.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.Librarys.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.Librarys.messages.PoseMessage;
-import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
+import org.firstinspires.ftc.teamcode.Subsystem.DriveTrainTele;
 
 import java.lang.Math;
 import java.util.Arrays;
@@ -149,7 +149,7 @@ public final class MecanumDrive {
         public void setPose(Pose2d pose) {
             this.pose = pose;
 
-            DriveTrain.lastHeading = Math.toDegrees(pose.heading.real);
+            DriveTrainTele.lastHeading = Math.toDegrees(pose.heading.real);
         }
 
         @Override

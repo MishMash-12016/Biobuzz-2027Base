@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-public class DriveTrain extends SubsystemBase {
+public class DriveTrainTele extends SubsystemBase {
     public static double lastHeading;
 
     private DcMotor frontLeft;

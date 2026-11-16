@@ -2,7 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
+import org.firstinspires.ftc.teamcode.Librarys.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Subsystem.DriveTrainTele;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
@@ -13,17 +14,20 @@ import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
  * כולל ה-Follower של Pedro Pathing.
  */
 public class RobotSystem {
-    public DriveTrain driveTrain;
+    public DriveTrainTele driveTrainTele;
     public Intake intake;
     public Shooter shooter;
     public Stopper stopper;
     public Transfer transfer;
+    public MecanumDrive AutoDrive;
 //    public Follower follower;
 
 
     public void init(HardwareMap hardwareMap) {
-        driveTrain = new DriveTrain();
-        driveTrain.init(hardwareMap);
+        driveTrainTele = new DriveTrainTele();
+        driveTrainTele.init(hardwareMap);
+
+
 
         intake = new Intake();
         intake.init(hardwareMap);

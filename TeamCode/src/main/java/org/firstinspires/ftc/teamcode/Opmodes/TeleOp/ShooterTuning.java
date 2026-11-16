@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -44,6 +44,8 @@ public class ShooterTuning extends LinearOpMode {
                 intake.IntakeStop();
                 transfer.TransferStop();
             }
+
+            shooter.printVelocity();
 
         }
     }

@@ -24,12 +24,12 @@ public class Shooter extends SubsystemBase {
 
     // Tunable via FTC Dashboard (must be public static double primitive)
     public static double IdealVoltage = 14;
-    public static double KP = 0.012;
+    public static double KP = 0.015;
     public static double KI = 0;
     public static double KD = 0;
-    public static double KF = 0.000295;
-    public static double KS = 0.13;
-    public static double targetVelocity = 1260; // ticks/sec — tune this on the dashboard
+    public static double KF = 0.00035;
+    public static double KS = 0.07;
+    public static double targetVelocity = 1170; // ticks/sec — tune this on the dashboard
 
 
     public void init(HardwareMap hardwareMap) {

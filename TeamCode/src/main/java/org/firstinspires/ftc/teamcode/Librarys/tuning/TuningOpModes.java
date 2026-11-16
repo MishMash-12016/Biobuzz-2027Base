@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
+
 import org.firstinspires.ftc.teamcode.Librarys.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Librarys.OTOSLocalizer;
 import org.firstinspires.ftc.teamcode.Librarys.PinpointLocalizer;
@@ -130,14 +131,14 @@ public final class TuningOpModes {
         DriveViewFactory dvf;
         if (DRIVE_CLASS.equals(MecanumDrive.class)) {
             dvf = hardwareMap -> {
-                MecanumDrive md = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+                MecanumDrive md = new MecanumDrive (hardwareMap, new Pose2d(0, 0, 0));
                 LazyImu lazyImu = md.lazyImu;
 
                 List<EncoderGroup> encoderGroups = new ArrayList<>();
                 List<EncoderRef> leftEncs = new ArrayList<>(), rightEncs = new ArrayList<>();
                 List<EncoderRef> parEncs = new ArrayList<>(), perpEncs = new ArrayList<>();
-                if (md.localizer instanceof MecanumDrive.DriveLocalizer) {
-                    MecanumDrive.DriveLocalizer dl = (MecanumDrive.DriveLocalizer) md.localizer;
+                if (md.localizer instanceof MecanumDrive .DriveLocalizer) {
+                    MecanumDrive .DriveLocalizer dl = (MecanumDrive .DriveLocalizer) md.localizer;
                     encoderGroups.add(new LynxQuadratureEncoderGroup(
                             hardwareMap.getAll(LynxModule.class),
                             Arrays.asList(dl.leftFront, dl.leftBack, dl.rightFront, dl.rightBack)
@@ -181,10 +182,10 @@ public final class TuningOpModes {
 
                 return new DriveView(
                     DriveType.MECANUM,
-                        MecanumDrive.PARAMS.inPerTick,
-                        MecanumDrive.PARAMS.maxWheelVel,
-                        MecanumDrive.PARAMS.minProfileAccel,
-                        MecanumDrive.PARAMS.maxProfileAccel,
+                        MecanumDrive .PARAMS.inPerTick,
+                        MecanumDrive .PARAMS.maxWheelVel,
+                        MecanumDrive .PARAMS.minProfileAccel,
+                        MecanumDrive .PARAMS.maxProfileAccel,
                         encoderGroups,
                         Arrays.asList(
                                 md.leftFront,
@@ -200,9 +201,9 @@ public final class TuningOpModes {
                         perpEncs,
                         lazyImu,
                         md.voltageSensor,
-                        () -> new MotorFeedforward(MecanumDrive.PARAMS.kS,
-                                MecanumDrive.PARAMS.kV / MecanumDrive.PARAMS.inPerTick,
-                                MecanumDrive.PARAMS.kA / MecanumDrive.PARAMS.inPerTick),
+                        () -> new MotorFeedforward(MecanumDrive .PARAMS.kS,
+                                MecanumDrive .PARAMS.kV / MecanumDrive .PARAMS.inPerTick,
+                                MecanumDrive .PARAMS.kA / MecanumDrive .PARAMS.inPerTick),
                         0
                 );
             };
