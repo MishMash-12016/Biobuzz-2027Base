@@ -11,8 +11,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 
 @Config
 public class Shooter extends SubsystemBase {
@@ -26,20 +24,12 @@ public class Shooter extends SubsystemBase {
 
     // Tunable via FTC Dashboard (must be public static double primitive)
     public static double IdealVoltage = 14;
-    //public static double KP = 0.015;
-    //public static double KI = 0;
-    //public static double KD = 0;
-    //public static double KF = 0.00035;
-    //public static double KS = 0.07;
-
-    public static double KP = 0;
+    public static double KP = 0.0155;
     public static double KI = 0;
     public static double KD = 0;
-    public static double KF = 0.00003;
-    public static double KS = 0.005;
-    public double normalHiveDistanceVelocity = 1170; // ticks/sec — tune this on the dashboard
-    public static double targetVelocity; // ticks/sec — tune this on the dashboard
-
+    public static double KF = 0.00031;
+    public static double KS = 0.13;
+    public static double targetVelocity = 1165; // ticks/sec — tune this on the dashboard
 
 
     public void init(HardwareMap hardwareMap) {
@@ -62,13 +52,12 @@ public class Shooter extends SubsystemBase {
     }
 
     /** Applies the current KP/KI/KD/KF/KS values to ShooterL */
-    public void applyPIDF(double velocity, Telemetry telemetry) {
-        targetVelocity = velocity;
+    public void applyPIDF() {
         pidController.setP(KP);
         pidController.setI(KI);
         pidController.setD(KD);
         pidController.setF(KF);
-        pidController.setSetPoint(velocity);
+        pidController.setSetPoint(targetVelocity);
 
         // חישוב פלט ה-PIDF (שכבר כולל בתוכו את ה-F והמהירות)
         double pidfPower = pidController.calculate(ShooterL.getVelocity());
@@ -82,6 +71,11 @@ public class Shooter extends SubsystemBase {
 
     }
 
+    /** Spins ShooterL to the current targetVelocity configured on FTC Dashboard. */
+    public void spin() {
+        applyPIDF();
+    }
+
     /** Stops both shooter motors without resetting targetVelocity. */
     public void stop() {
         ShooterL.setPower(0);
@@ -92,7 +86,7 @@ public class Shooter extends SubsystemBase {
     public void printVelocity() {
         TelemetryPacket velocityPacket = new TelemetryPacket();
         velocityPacket.put("ShooterL velocity (ticks/s)", ShooterL.getVelocity());
-        velocityPacket.put("Target velocity (ticks/s)", normalHiveDistanceVelocity);
+        velocityPacket.put("Target velocity (ticks/s)", targetVelocity);
         velocityPacket.put("PIDF", ShooterL.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
         Dashboard.sendTelemetryPacket(velocityPacket);
         Dashboard.updateConfig();

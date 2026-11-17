@@ -33,7 +33,7 @@ public class ShooterTuning extends LinearOpMode {
         while (opModeIsActive()){
 
             if (gamepad1.dpad_up){
-                shooter.applyPIDF(shooter.normalHiveDistanceVelocity,telemetry);
+                shooter.spin();
             }
 
             if (gamepad1.dpad_down){

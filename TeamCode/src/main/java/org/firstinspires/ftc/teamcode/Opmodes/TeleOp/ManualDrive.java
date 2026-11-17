@@ -55,11 +55,12 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // Shooter
-            if (gamepad1.right_trigger_pressed ){
-                shooter.applyPIDF(shooter.normalHiveDistanceVelocity,telemetry);}
-            if (gamepad1.x){
-                shooter.stop();
-            }
+            shooter.spin();
+//            if (gamepad1.right_trigger_pressed ){
+//                shooter.spin();}
+//            if (gamepad1.x){
+//                shooter.stop();
+//            }
 
             // Stopper
             if (gamepad1.dpad_up) {
