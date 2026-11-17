@@ -20,9 +20,9 @@ public class StooperTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.right_trigger_pressed) {
-                stooper.close();
+                stooper.down();
             } else {
-                stooper.open();
+                stooper.up();
             }
         }
     }

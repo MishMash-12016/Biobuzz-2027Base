@@ -31,28 +31,23 @@ public class ShooterTuning extends LinearOpMode {
          waitForStart();
 
         while (opModeIsActive()){
+            //shooter.spin();
 
-            if (gamepad1.dpad_up){
-                shooter.spin();
-            }
 
-            if (gamepad1.dpad_down){
-                shooter.stop();
-            }
 
             if(gamepad1.right_trigger_pressed){
                 intake.collect();
                 transfer.TransferRunning();
             }else{
                 intake.stop();
-                transfer.TransferStop();
+                transfer.stop();
             }
 
             if(gamepad2.right_trigger_pressed){
-                stooper.close();
+                stooper.down();
 
             } else {
-                stooper.open();
+                stooper.up();
             }
 
             shooter.printVelocity();

@@ -7,19 +7,19 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 @Config
 public class Stopper extends SubsystemBase {
     private Servo servo;
-    public static double closedPos = 0.65;
-    public static double openPos = 0.75;
+    public static double down = 0.65;
+    public static double up = 0.8;
 
     public void init(HardwareMap hardwareMap ){
         servo = hardwareMap.get(Servo.class, "stopper");
     }
 
-    public void open (){
-        servo.setPosition(openPos);
+    public void up (){
+        servo.setPosition(up);
     }
 
-    public void close (){
-        servo.setPosition(closedPos);
+    public void down(){
+        servo.setPosition(down);
     }
 
 }

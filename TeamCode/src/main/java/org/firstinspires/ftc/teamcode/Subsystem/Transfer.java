@@ -17,7 +17,7 @@ public class Transfer extends SubsystemBase {
 
     }
 
-    public void TransferStop(){
+    public void stop(){
         transfer.setPower(0);
     }
 

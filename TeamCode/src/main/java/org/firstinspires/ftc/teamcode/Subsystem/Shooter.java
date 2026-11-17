@@ -16,6 +16,7 @@ import com.seattlesolvers.solverslib.controller.PIDFController;
 public class Shooter extends SubsystemBase {
     private DcMotorEx ShooterL;
 //    private DcMotorEx ShooterR;
+public double targetVel;
     private VoltageSensor voltageSensor;
 
     private PIDFController pidController;
@@ -29,7 +30,7 @@ public class Shooter extends SubsystemBase {
     public static double KD = 0;
     public static double KF = 0.00031;
     public static double KS = 0.13;
-    public static double targetVelocity = 1165; // ticks/sec — tune this on the dashboard
+//    public double targetVelocity = 1165; // ticks/sec — tune this on the dashboard
 
 
     public void init(HardwareMap hardwareMap) {
@@ -52,28 +53,36 @@ public class Shooter extends SubsystemBase {
     }
 
     /** Applies the current KP/KI/KD/KF/KS values to ShooterL */
-    public void applyPIDF() {
-        pidController.setP(KP);
-        pidController.setI(KI);
-        pidController.setD(KD);
-        pidController.setF(KF);
-        pidController.setSetPoint(targetVelocity);
+    public void applyPIDF(double vel) {
+        targetVel = vel;
+        if (vel > ShooterL.getVelocity()){
+            pidController.setP(KP);
+            pidController.setI(KI);
+            pidController.setD(KD);
+            pidController.setF(KF);
+            pidController.setSetPoint(vel);
 
-        // חישוב פלט ה-PIDF (שכבר כולל בתוכו את ה-F והמהירות)
-        double pidfPower = pidController.calculate(ShooterL.getVelocity());
+            // חישוב פלט ה-PIDF (שכבר כולל בתוכו את ה-F והמהירות)
+            double pidfPower = pidController.calculate(ShooterL.getVelocity());
 
-        // הכפלת ההספק בתיקון המתח של הבטריה
-        double power = (KS + pidfPower) * IdealVoltage / voltageSensor.getVoltage();
+            // הכפלת ההספק בתיקון המתח של הבטריה
+            double power = (KS + pidfPower) * IdealVoltage / voltageSensor.getVoltage();
 
-        // שליחת ההספק לשני המנועים (מנוע ימין מעתיק את שמאל)
-        ShooterL.setPower(power);
-//      ShooterR.setPower(ShooterL.getPower());
+            // שליחת ההספק לשני המנועים (מנוע ימין מעתיק את שמאל)
+            ShooterL.setPower(power);
+//          ShooterR.setPower(ShooterL.getPower());
+        }else {
+            ShooterL.setPower(0);
+        }
+
 
     }
 
+
+
     /** Spins ShooterL to the current targetVelocity configured on FTC Dashboard. */
-    public void spin() {
-        applyPIDF();
+    public void spin(double vel) {
+        applyPIDF(vel);
     }
 
     /** Stops both shooter motors without resetting targetVelocity. */
@@ -86,7 +95,7 @@ public class Shooter extends SubsystemBase {
     public void printVelocity() {
         TelemetryPacket velocityPacket = new TelemetryPacket();
         velocityPacket.put("ShooterL velocity (ticks/s)", ShooterL.getVelocity());
-        velocityPacket.put("Target velocity (ticks/s)", targetVelocity);
+        velocityPacket.put("Target velocity (ticks/s)",targetVel );
         velocityPacket.put("PIDF", ShooterL.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
         Dashboard.sendTelemetryPacket(velocityPacket);
         Dashboard.updateConfig();

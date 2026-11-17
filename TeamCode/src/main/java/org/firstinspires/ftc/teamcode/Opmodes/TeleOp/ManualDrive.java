@@ -46,32 +46,39 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // Intake + Transfer
-            if (gamepad1.b) {
+            if (gamepad1.right_bumper) {
                 intake.collect();
                 transfer.TransferRunning();
             } else {
                 intake.stop();
-                transfer.TransferStop();
+                transfer.stop();
+            }
+            if (gamepad1.left_bumper){
+                intake.eject();
+                transfer.stop();
+            }else {
+                intake.stop();
+                transfer.stop();
             }
 
             // Shooter
-            shooter.spin();
-//            if (gamepad1.right_trigger_pressed ){
-//                shooter.spin();}
-//            if (gamepad1.x){
-//                shooter.stop();
-//            }
+            shooter.spin(shooter.targetVel);
+            if (gamepad1.right_trigger_pressed ){
+                shooter.targetVel = 1165;}
+            if (gamepad1.left_trigger_pressed){
+                shooter.targetVel = 0;
+
+            }
 
             // Stopper
-            if (gamepad1.dpad_up) {
-                stopper.open();
+            if (gamepad1.a) {
+                stopper.up();
             }
-            if (gamepad1.dpad_down) {
-                stopper.close();
+            if (gamepad1.y) {
+                stopper.down();
             }
 
             shooter.printVelocity();
-            telemetry.addData("Shooter Velocity" , Shooter.targetVelocity);
             telemetry.addData("X",gamepad1.left_stick_x);
             telemetry.addData("Y",gamepad1.left_stick_y);
             telemetry.update();
