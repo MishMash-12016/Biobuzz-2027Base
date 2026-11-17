@@ -16,7 +16,10 @@ public class Transfer extends SubsystemBase {
         transfer.setPower(1);
 
     }
+    public void eject() {
+        transfer.setPower(-1);
 
+    }
     public void stop(){
         transfer.setPower(0);
     }

@@ -17,7 +17,7 @@ public class Intake extends SubsystemBase {
         intake.setPower(1);
     }
     public void eject(){
-        intake.setPower(-0.8);
+        intake.setPower(-1);
     }
     public void stop(){
         intake.setPower(0);

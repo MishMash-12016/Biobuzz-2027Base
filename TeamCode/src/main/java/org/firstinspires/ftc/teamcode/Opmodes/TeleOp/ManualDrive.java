@@ -49,17 +49,15 @@ public class ManualDrive extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 intake.collect();
                 transfer.TransferRunning();
+            } else if (gamepad1.left_bumper){
+                intake.eject();
+                transfer.eject();
             } else {
                 intake.stop();
                 transfer.stop();
             }
-            if (gamepad1.left_bumper){
-                intake.eject();
-                transfer.stop();
-            }else {
-                intake.stop();
-                transfer.stop();
-            }
+
+
 
             // Shooter
             shooter.spin(shooter.targetVel);
