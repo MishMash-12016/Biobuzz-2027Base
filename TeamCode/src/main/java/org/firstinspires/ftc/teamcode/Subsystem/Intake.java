@@ -8,19 +8,18 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 public class Intake extends SubsystemBase {
     private DcMotor intake;
 
-
     public void init(HardwareMap hardwareMap ){
         intake = hardwareMap.get(DcMotor.class, "intake");
-
-        // TODO Change
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-    public void IntakeRuning(){
+    public void collect(){
         intake.setPower(1);
     }
-
-    public void IntakeStop(){
+    public void eject(){
+        intake.setPower(-0.8);
+    }
+    public void stop(){
         intake.setPower(0);
     }
 

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
 import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 
 @TeleOp
@@ -19,10 +20,12 @@ public class ShooterTuning extends LinearOpMode {
         Shooter shooter = new Shooter();
         Intake intake = new Intake();
         Transfer transfer = new Transfer();
+        Stopper stooper = new Stopper();
 
         shooter.init(hardwareMap);
         intake.init(hardwareMap);
         transfer.init(hardwareMap);
+        stooper.init(hardwareMap);
 
         telemetry = new MultipleTelemetry(telemetry , FtcDashboard.getInstance().getTelemetry());
          waitForStart();
@@ -30,7 +33,7 @@ public class ShooterTuning extends LinearOpMode {
         while (opModeIsActive()){
 
             if (gamepad1.dpad_up){
-                shooter.spin();
+                shooter.applyPIDF(shooter.normalHiveDistanceVelocity,telemetry);
             }
 
             if (gamepad1.dpad_down){
@@ -38,11 +41,18 @@ public class ShooterTuning extends LinearOpMode {
             }
 
             if(gamepad1.right_trigger_pressed){
-                intake.IntakeRuning();
+                intake.collect();
                 transfer.TransferRunning();
             }else{
-                intake.IntakeStop();
+                intake.stop();
                 transfer.TransferStop();
+            }
+
+            if(gamepad2.right_trigger_pressed){
+                stooper.close();
+
+            } else {
+                stooper.open();
             }
 
             shooter.printVelocity();

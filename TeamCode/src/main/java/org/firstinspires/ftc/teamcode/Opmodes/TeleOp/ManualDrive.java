@@ -17,23 +17,29 @@ import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 public class ManualDrive extends LinearOpMode {
     @Override
     public void runOpMode() {
+
+        // region CREATING SYSTEMS
         DriveTrain dt = new DriveTrain();
         Intake intake = new Intake();
         Shooter shooter = new Shooter();
         Transfer transfer = new Transfer();
         Stopper stopper = new Stopper();
+        // endregion
 
+        // region INITILAIZE SYSTEMS
         dt.init(hardwareMap);
         intake.init(hardwareMap);
         shooter.init(hardwareMap);
         transfer.init(hardwareMap);
         stopper.init(hardwareMap);
+        // endregion
 
         telemetry = new MultipleTelemetry(telemetry , FtcDashboard.getInstance().getTelemetry());
 
         waitForStart();
 
         while (opModeIsActive()) {
+            // Drive Train
             dt.fieldOrientedDrive(gamepad1);
             if (gamepad1.options) {
                 dt.resetHeading();
@@ -41,19 +47,16 @@ public class ManualDrive extends LinearOpMode {
 
             // Intake + Transfer
             if (gamepad1.b) {
-                intake.IntakeRuning();
+                intake.collect();
                 transfer.TransferRunning();
             } else {
-                intake.IntakeStop();
+                intake.stop();
                 transfer.TransferStop();
             }
 
-            // Shooter Trigger & Emergency Stop Control
+            // Shooter
             if (gamepad1.right_trigger_pressed ){
-                // Trigger pressed: Spin up using targetVelocity and active PIDF
-                shooter.spin();
-            }
-
+                shooter.applyPIDF(shooter.normalHiveDistanceVelocity,telemetry);}
             if (gamepad1.x){
                 shooter.stop();
             }
@@ -66,11 +69,7 @@ public class ManualDrive extends LinearOpMode {
                 stopper.close();
             }
 
-            // Always update subsystem periodic logic (syncs dynamic PIDF tuning & motor mirroring)
-
-//             Telemetry & Dashboard telemetry output
             shooter.printVelocity();
-
             telemetry.addData("Shooter Velocity" , Shooter.targetVelocity);
             telemetry.addData("X",gamepad1.left_stick_x);
             telemetry.addData("Y",gamepad1.left_stick_y);

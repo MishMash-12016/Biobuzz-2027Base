@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode.AutoCommandGroup.autoActions;
-
-import android.app.Notification;
+package org.firstinspires.ftc.teamcode.AutoCommands;
 
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -11,4 +9,5 @@ public class UtilActions {
         new SleepAction(Wait);
         return new SleepAction(Wait);
     }
+
 }

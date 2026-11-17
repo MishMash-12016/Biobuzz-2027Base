@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Auto;
+package org.firstinspires.ftc.teamcode.Opmodes.Auto.Healperclass;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
