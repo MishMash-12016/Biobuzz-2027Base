@@ -1,10 +1,7 @@
-package org.firstinspires.ftc.teamcode.Opmode.Auto;
-
-import androidx.annotation.NonNull;
+package org.firstinspires.ftc.teamcode.Opmode.Auto.Red;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-import com.acmerobotics.roadrunner.Action;
+
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -13,6 +10,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 
 import org.firstinspires.ftc.teamcode.AutoActions.IntakeAction;
 import org.firstinspires.ftc.teamcode.AutoActions.ShooterAction;
@@ -51,12 +49,12 @@ public class Auto_2_Red extends LinearOpMode {
         // region TRAJECTORY
 
         TrajectoryActionBuilder IntakeFromGarden = drive.actionBuilder(initialPose)
-                .strafeToLinearHeading(new Vector2d(50 , -54) , Math.toRadians(90));
+                .strafeToLinearHeading(new com.acmerobotics.roadrunner.Vector2d(50 , -54) , Math.toRadians(90));
 
 
         TrajectoryActionBuilder ScoreIntakeFromGurden = IntakeFromGarden.endTrajectory().fresh()
-                .strafeToLinearHeading(new Vector2d(-20, -45) , Math.toRadians(90))
-                .strafeToSplineHeading(new Vector2d(-54 , -18) , Math.toRadians(130))
+                .strafeToLinearHeading(new com.acmerobotics.roadrunner.Vector2d(-20, -45) , Math.toRadians(90))
+                .strafeToSplineHeading(new com.acmerobotics.roadrunner.Vector2d(-54 , -18) , Math.toRadians(130))
                 .waitSeconds(0.3);
 
 
