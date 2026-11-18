@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Librarys.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
@@ -19,7 +18,7 @@ public class RobotSystem {
     public Shooter shooter;
     public Stopper stopper;
     public Transfer transfer;
-    public MecanumDrive AutoDrive;
+
 //    public Follower follower;
 
 

@@ -53,7 +53,7 @@ public class ManualDrive extends LinearOpMode {
                 intake.eject();
                 transfer.eject();
             } else {
-                intake.stop();
+                intake.stopIntake();
                 transfer.stop();
             }
 
