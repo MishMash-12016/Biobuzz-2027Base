@@ -47,7 +47,7 @@ public class ManualDrive extends LinearOpMode {
 
             // Intake + Transfer
             if (gamepad1.right_bumper) {
-                intake.collect();
+                Intake.collect();
                 transfer.TransferRunning();
             } else if (gamepad1.left_bumper){
                 intake.eject();

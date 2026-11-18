@@ -2,22 +2,18 @@ package org.firstinspires.ftc.teamcode.Opmode.Auto.Red;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-
-import org.firstinspires.ftc.teamcode.AutoActions.IntakeAction;
-import org.firstinspires.ftc.teamcode.AutoActions.ShooterAction;
-import org.firstinspires.ftc.teamcode.AutoActions.StooperAction;
-import org.firstinspires.ftc.teamcode.AutoActions.TransferAction;
-import org.firstinspires.ftc.teamcode.AutoActions.UtilActions;
 import org.firstinspires.ftc.teamcode.Librarys.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 
 @Config
 @Autonomous(name = "Auto_2_Red", group = "Autonomous")
@@ -30,19 +26,9 @@ public class Auto_2_Red extends LinearOpMode {
         Pose2d initialPose = new Pose2d(62, -10, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-        // region CREATE AND INITIALIZE SYSTEMS
-        //init for all the Subsystems that this Opmode uses
-        IntakeAction intake = new IntakeAction();
-        StooperAction stooper = new StooperAction();
-        TransferAction transfer = new TransferAction();
-        UtilActions util = new UtilActions();
-        ShooterAction shooter = new  ShooterAction();
-
+        Intake intake = new Intake();
         intake.init(hardwareMap);
-        stooper.init(hardwareMap);
-        transfer.init(hardwareMap);
-        shooter.init(hardwareMap);
-        // endregion
+
 
 
 
@@ -68,53 +54,19 @@ public class Auto_2_Red extends LinearOpMode {
 
 
 
-        //Starts the Opmode
-        if (isStopRequested()) {return;}
 
 
         waitForStart();
 
-        while (opModeIsActive()){
+        if (isStopRequested()) return;
 
-            Actions.runBlocking(stooper.up());
-            Actions.runBlocking(
-                    new ParallelAction(
-
-                    new SequentialAction(
-                            shooter.spinAction(),
-                            util.waitCommand(2),
-                            stooper.Down(),
-                            intake.IntakeRun(),
-                            transfer.TransferRunning(),
-                            util.waitCommand(3)
-                    ),
-
-                    intake.IntakePause(),
-                    transfer.TransferStop(),
-                    stooper.up(),
-
-                    new ParallelAction(
-                    IntakeFromGarden.build(),
-                    intake.IntakeRun(),
-                    transfer.TransferRunning()
-                    ),
-
-                    new SequentialAction(
-                    ScoreIntakeFromGurden.build(),
-                    util.waitCommand(3),
-                    shooter.spinAction(),
-                    util.waitCommand(3),
-                    stooper.Down(),
-                    intake.IntakeRun(),
-                    transfer.TransferRunning()
-                    ),
-
-                    GoPark.build()
-
-                    )
-            );
-
-        }
+        Actions.runBlocking(
+              new SequentialAction(
+                Intake.Collect.collect(),
+                new SleepAction(3),
+                Intake.Stop.stop()
+                )
+        );
 
     }
 }

@@ -1,26 +1,76 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-    private DcMotor intake;
+    private static DcMotor intake;
 
     public void init(HardwareMap hardwareMap ){
         intake = hardwareMap.get(DcMotor.class, "intake");
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
-    public void collect(){
+
+    public static void collect(){
         intake.setPower(1);
     }
-    public void eject(){
+
+    public static class Collect implements Action{
+
+        @Override
+    public boolean run(@NonNull TelemetryPacket packet) {
+        intake.setPower(1);
+        return false;
+    }
+
+        public static Action collect() {
+          return new Collect();
+        }
+    }
+
+    public static void eject(){
         intake.setPower(-1);
     }
-    public void stop(){
+
+    public static class Eject implements Action{
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intake.setPower(-1);
+            return false;
+        }
+
+        public static Action eject() {
+            return new Eject();
+        }
+    }
+
+    public static void stop(){
         intake.setPower(0);
     }
+
+    public static class Stop implements Action{
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            intake.setPower(0);
+            return false;
+        }
+
+        public static Action stop() {
+            return new Stop();
+        }
+    }
+
+
 
 }
