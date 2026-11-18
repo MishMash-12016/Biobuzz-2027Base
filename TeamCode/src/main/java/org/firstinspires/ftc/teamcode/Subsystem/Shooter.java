@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -78,14 +81,13 @@ public double targetVel;
 
     }
 
-
-
     /** Spins ShooterL to the current targetVelocity configured on FTC Dashboard. */
     public void spin(double vel) {
         applyPIDF(vel);
     }
 
     /** Stops both shooter motors without resetting targetVelocity. */
+
     public void stop() {
         ShooterL.setPower(0);
 //      ShooterR.setPower(0);

@@ -79,7 +79,7 @@ public class DriveTrain extends SubsystemBase {
         double x = gamepad.left_stick_x;
         double rx = gamepad.right_stick_x;
 
-        // Denominator scales powers down if any individual motor exceeds 1.0 magnitude
+        // Denominator scales powers downPose if any individual motor exceeds 1.0 magnitude
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
 
         double frontLeftPower = (y + x + rx) / denominator;

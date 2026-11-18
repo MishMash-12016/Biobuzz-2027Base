@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Opmodes.TeleOp;
+package org.firstinspires.ftc.teamcode.Opmode.TeleOp;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

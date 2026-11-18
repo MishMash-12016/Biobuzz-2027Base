@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AutoCommands;
+package org.firstinspires.ftc.teamcode.AutoActions;
 
 import androidx.annotation.NonNull;
 
@@ -11,13 +11,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 
-public class IntakeAuto extends SubsystemBase {
+public class IntakeAction extends SubsystemBase {
     private DcMotor intake;
 
     public void init(HardwareMap hardwareMap ){
         intake = hardwareMap.get(DcMotor.class, "intake");
-
-        // TODO Change
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
@@ -28,7 +26,6 @@ public class IntakeAuto extends SubsystemBase {
                 if (intake != null) {
                     intake.setPower(1.0);
                 }
-
                 return false;
             }
         };

@@ -1,21 +1,20 @@
-package org.firstinspires.ftc.teamcode.Opmodes.Auto.Healperclass;
+package org.firstinspires.ftc.teamcode.AutoActions.Healperclass;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
-import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 
-import org.firstinspires.ftc.teamcode.AutoCommands.IntakeAuto;
-import org.firstinspires.ftc.teamcode.AutoCommands.StooperAuto;
-import org.firstinspires.ftc.teamcode.AutoCommands.TransferAuto;
-import org.firstinspires.ftc.teamcode.AutoCommands.UtilActions;
+import org.firstinspires.ftc.teamcode.AutoActions.IntakeAction;
+import org.firstinspires.ftc.teamcode.AutoActions.StooperAction;
+import org.firstinspires.ftc.teamcode.AutoActions.TransferAction;
+import org.firstinspires.ftc.teamcode.AutoActions.UtilActions;
 import org.firstinspires.ftc.teamcode.Librarys.MecanumDrive;
 @Disabled
 @Config
@@ -30,9 +29,9 @@ public class AutoSample extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         //init for all the Subsystems that this Opmode uses
-        IntakeAuto intake = new IntakeAuto();
-        StooperAuto stooper = new StooperAuto();
-        TransferAuto transfer = new TransferAuto();
+        IntakeAction intake = new IntakeAction();
+        StooperAction stooper = new StooperAction();
+        TransferAction transfer = new TransferAction();
         UtilActions util = new UtilActions();
 
 

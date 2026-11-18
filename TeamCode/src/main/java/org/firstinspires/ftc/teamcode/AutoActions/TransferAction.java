@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.AutoCommands;
+package org.firstinspires.ftc.teamcode.AutoActions;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-public class TransferAuto {
+public class TransferAction {
 
     private DcMotor transfer;
 
