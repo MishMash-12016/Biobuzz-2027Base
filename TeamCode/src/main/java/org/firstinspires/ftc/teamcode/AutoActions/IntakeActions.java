@@ -11,5 +11,5 @@ import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 
 public class IntakeActions {
 
-    Intake intake = new Intake();
-    }
+
+}

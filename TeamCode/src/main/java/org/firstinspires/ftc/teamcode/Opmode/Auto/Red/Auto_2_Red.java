@@ -12,8 +12,13 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.AutoActions.ShooterAction;
 import org.firstinspires.ftc.teamcode.Librarys.MecanumDrive;
+import org.firstinspires.ftc.teamcode.RobotSystem;
 import org.firstinspires.ftc.teamcode.Subsystem.Intake;
+import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
+import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
 
 @Config
 @Autonomous(name = "Auto_2_Red", group = "Autonomous")
@@ -26,8 +31,8 @@ public class Auto_2_Red extends LinearOpMode {
         Pose2d initialPose = new Pose2d(62, -10, Math.toRadians(0));
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
-        Intake intake = new Intake();
-        intake.init(hardwareMap);
+        RobotSystem robotSystem = new RobotSystem();
+        robotSystem.init(hardwareMap);
 
 
 
@@ -54,20 +59,28 @@ public class Auto_2_Red extends LinearOpMode {
 
 
 
-
+        Action ActionIntakeFromGarden = IntakeFromGarden.build();
+        Action ActionScoreIntakeFromGurden = ScoreIntakeFromGurden.build();
 
         waitForStart();
 
         if (isStopRequested()) return;
 
         Actions.runBlocking(
-              new SequentialAction(
-                Intake.Collect.collect(),
-                new SleepAction(3),
-                Intake.Stop.stop()
-                )
-        );
+            new ParallelAction(
+                ShooterAction.PIDF.pidf(),
+                    new SequentialAction(
+                        Intake.Collect.collect(),
+                        ActionIntakeFromGarden,
+                        new ParallelAction(
+                            ActionIntakeFromGarden,
+                            ShooterAction.RunShooter.Run()
 
+
+                        )
+                    )
+            )
+        );
     }
 }
 
