@@ -28,7 +28,7 @@ public class Stopper extends SubsystemBase {
             servo.setPosition(up);
             return false;
         }
-            public Action up(){
+            public static Action up(){
             return new Up();
         }
     }
@@ -43,7 +43,7 @@ public class Stopper extends SubsystemBase {
             servo.setPosition(down);
             return false;
         }
-        public Action down(){
+        public static Action down(){
             return new Down();
         }
     }

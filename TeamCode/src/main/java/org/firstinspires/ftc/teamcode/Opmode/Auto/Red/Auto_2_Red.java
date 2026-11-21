@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.AutoActions.RobotActions;
 import org.firstinspires.ftc.teamcode.AutoActions.ShooterAction;
 import org.firstinspires.ftc.teamcode.Librarys.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotSystem;
@@ -32,6 +33,8 @@ public class Auto_2_Red extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, initialPose);
 
         RobotSystem robotSystem = new RobotSystem();
+        RobotActions robotActions = new RobotActions();
+
         robotSystem.init(hardwareMap);
 
 
@@ -74,7 +77,11 @@ public class Auto_2_Red extends LinearOpMode {
                         ActionIntakeFromGarden,
                         new ParallelAction(
                             ActionIntakeFromGarden,
-                            ShooterAction.RunShooter.Run()
+                            ShooterAction.RunShooter.Run(),
+
+                                // Sequential actions for Intake and Scoring
+                                RobotActions.InakeAction.intakeAction(),
+                                RobotActions.ScoringAction.scoringAction()
 
 
                         )

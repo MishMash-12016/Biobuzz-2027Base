@@ -28,10 +28,11 @@ public class Transfer extends SubsystemBase {
             return false;
         }
 
-        public Action runTransfer() {
+        public static Action runTransfer() {
             return new RunTransfer();
         }
     }
+
 
     public void eject() {
         transfer.setPower(-1);
@@ -45,7 +46,7 @@ public class Transfer extends SubsystemBase {
             return false;
         }
 
-        public Action eject() {
+        public static Action eject() {
             return new TransferEject();
         }
     }
@@ -63,7 +64,7 @@ public class Transfer extends SubsystemBase {
             return false;
         }
 
-        public Action stop() {
+        public static Action stop() {
             return new StopTransfer();
         }
     }
