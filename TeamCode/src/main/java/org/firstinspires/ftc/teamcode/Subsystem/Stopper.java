@@ -11,11 +11,13 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 @Config
 public class Stopper extends SubsystemBase {
     private static Servo servo;
-    public static double down = 0.65;
-    public static double up = 0.8;
+    public static double down = 0.76;
+    public static double up = 0.95;
 
     public void init(HardwareMap hardwareMap ){
         servo = hardwareMap.get(Servo.class, "stopper");
+        servo.setDirection(Servo.Direction.FORWARD);
+        servo.scaleRange(0.0, 1.0);
     }
 
     public void up (){

@@ -71,20 +71,11 @@ public class Auto_2_Red extends LinearOpMode {
 
         Actions.runBlocking(
             new ParallelAction(
-                ShooterAction.PIDF.pidf(),
                     new SequentialAction(
-                        Intake.Collect.collect(),
-                        ActionIntakeFromGarden,
-                        new ParallelAction(
-                            ActionIntakeFromGarden,
-                            ShooterAction.RunShooter.Run(),
-
-                                // Sequential actions for Intake and Scoring
-                                RobotActions.InakeAction.intakeAction(),
-                                RobotActions.ScoringAction.scoringAction()
-
-
-                        )
+                        RobotActions.InakeAction.intakeAction(),
+                        new SleepAction(3),
+                        RobotActions.ScoringAction.scoringAction()
+                            
                     )
             )
         );
