@@ -24,6 +24,8 @@ public class StooperTest extends LinearOpMode {
             } else {
                 stooper.up();
             }
+
+            stooper.PosePacket();
         }
     }
 }

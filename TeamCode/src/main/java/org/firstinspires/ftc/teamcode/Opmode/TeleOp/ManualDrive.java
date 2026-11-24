@@ -69,10 +69,10 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // Stopper
-            if (gamepad1.a) {
+            if (gamepad1.dpad_up) {
                 stopper.up();
             }
-            if (gamepad1.y) {
+            if (gamepad1.dpad_down) {
                 stopper.down();
             }
 
