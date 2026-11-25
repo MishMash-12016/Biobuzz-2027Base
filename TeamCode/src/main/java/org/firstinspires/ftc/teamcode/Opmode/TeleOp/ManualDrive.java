@@ -77,6 +77,7 @@ public class ManualDrive extends LinearOpMode {
             }
 
             shooter.printVelocity();
+
             telemetry.addData("X",gamepad1.left_stick_x);
             telemetry.addData("Y",gamepad1.left_stick_y);
             telemetry.update();

@@ -14,12 +14,11 @@ public class Stopper  {
     private static Servo servo;
     private FtcDashboard Dashboard;
 
-    public static double down = 1;
-    public static double up = 0.79;
+    public static double down = 0.6;
+    public static double up = 0.9;
 
     public void init(HardwareMap hardwareMap ){
         servo = hardwareMap.get(Servo.class, "stopper");
-        servo.setDirection(Servo.Direction.REVERSE);
         servo.scaleRange(0.0, 1.0);
     }
 

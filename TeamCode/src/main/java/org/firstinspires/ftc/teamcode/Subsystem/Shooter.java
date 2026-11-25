@@ -11,14 +11,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 
 
 @Config
-public class Shooter extends SubsystemBase {
+public class Shooter  {
     private DcMotorEx ShooterL;
-//    private DcMotorEx ShooterR;
 public double targetVel;
     private VoltageSensor voltageSensor;
 
@@ -39,15 +37,12 @@ public double targetVel;
     public void init(HardwareMap hardwareMap) {
         Dashboard = FtcDashboard.getInstance();
         ShooterL = hardwareMap.get(DcMotorEx.class, "ShooterL");
-//        ShooterR = hardwareMap.get(DcMotorEx.class, "ShooterR");
 
         // ShooterL is PIDF-controlled with encoder
         ShooterL.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         ShooterL.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-//      ShooterR.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         ShooterL.setDirection(DcMotorSimple.Direction.FORWARD);
-//      ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         pidController = new PIDFController(KP, KI, KD, KF);
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -73,7 +68,6 @@ public double targetVel;
 
             // שליחת ההספק לשני המנועים (מנוע ימין מעתיק את שמאל)
             ShooterL.setPower(power);
-//          ShooterR.setPower(ShooterL.getPower());
         }else {
             ShooterL.setPower(0);
         }
@@ -90,7 +84,6 @@ public double targetVel;
 
     public void stop() {
         ShooterL.setPower(0);
-//      ShooterR.setPower(0);
     }
 
     /** Sends velocity and PIDF telemetry to FTC Dashboard. */
