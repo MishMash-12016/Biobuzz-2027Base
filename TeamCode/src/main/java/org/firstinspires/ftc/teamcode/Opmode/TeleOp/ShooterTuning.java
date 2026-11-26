@@ -14,6 +14,10 @@ import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
 @TeleOp
 @Config
 public class ShooterTuning extends LinearOpMode {
+
+    public static double TargetVelocity = 0;
+    public static double TargetPower = 0;
+
     @Override
     public void runOpMode()  {
 
@@ -31,8 +35,17 @@ public class ShooterTuning extends LinearOpMode {
          waitForStart();
 
         while (opModeIsActive()){
-            //shooter.spin();
 
+
+
+
+
+            if (TargetVelocity !=  0){
+                shooter.spin(TargetVelocity);
+            }
+            else {
+                shooter.setVoltage(TargetPower);
+            }
 
 
             if(gamepad1.right_trigger_pressed){
@@ -41,13 +54,6 @@ public class ShooterTuning extends LinearOpMode {
             }else{
                 intake.stop();
                 transfer.stop();
-            }
-
-            if(gamepad2.right_trigger_pressed){
-                stooper.down();
-
-            } else {
-                stooper.up();
             }
 
             shooter.printVelocity();
