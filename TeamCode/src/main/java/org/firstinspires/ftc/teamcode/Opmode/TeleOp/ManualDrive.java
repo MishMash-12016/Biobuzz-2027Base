@@ -69,15 +69,16 @@ public class ManualDrive extends LinearOpMode {
             }
 
             // Stopper
-            if (gamepad1.dpad_up) {
+            if (gamepad1.y) {
                 stopper.up();
             }
-            if (gamepad1.dpad_down) {
+
+            if (gamepad1.a) {
                 stopper.down();
             }
 
+            
             shooter.printVelocity();
-
             telemetry.addData("X",gamepad1.left_stick_x);
             telemetry.addData("Y",gamepad1.left_stick_y);
             telemetry.update();

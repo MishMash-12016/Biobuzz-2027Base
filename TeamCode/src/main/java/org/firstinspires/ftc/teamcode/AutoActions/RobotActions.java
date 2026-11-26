@@ -20,7 +20,7 @@ public class RobotActions {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             new SequentialAction(
-                    Stopper.Up.up(),
+//                    Stopper.Up.up(),
                     new SleepAction(3),
                     Intake.Collect.collect(),
                     Transfer.RunTransfer.runTransfer()
@@ -38,7 +38,7 @@ public class RobotActions {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
             new SequentialAction(
-                    Stopper.Down.down(),
+//                    Stopper.Down.down(),
                     new SleepAction(3),
                     Intake.Collect.collect(),
                     Transfer.RunTransfer.runTransfer()

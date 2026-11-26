@@ -14,8 +14,8 @@ public class Stopper  {
     private static Servo servo;
     private FtcDashboard Dashboard;
 
-    public static double down = 0.6;
-    public static double up = 0.9;
+    public static double down = 0.85;
+    public static double up = 1.0;
 
     public void init(HardwareMap hardwareMap ){
         servo = hardwareMap.get(Servo.class, "stopper");
@@ -26,40 +26,33 @@ public class Stopper  {
         servo.setPosition(up);
     }
 
-    public static class Up implements Action{
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            servo.setPosition(up);
-            return false;
-        }
-            public static Action up(){
-            return new Up();
-        }
-    }
+//    public static class Up implements Action{
+//        @Override
+//        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+//            servo.setPosition(up);
+//            return false;
+//        }
+//            public static Action up(){
+//            return new Up();
+//        }
+//    }
 
     public void down(){
         servo.setPosition(down);
     }
 
-    public static class Down implements Action{
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            servo.setPosition(down);
-            return false;
-        }
-        public static Action down(){
-            return new Down();
-        }
-    }
+//    public static class Down implements Action{
+//        @Override
+//        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+//            servo.setPosition(down);
+//            return false;
+//        }
+//        public static Action down(){
+//            return new Down();
+//        }
+//    }
 
-    public void PosePacket(){
-        TelemetryPacket posepacket = new TelemetryPacket();
-        posepacket.put("Servo Position" , Stopper.servo.getPosition());
-        posepacket.put("Servo Current" , Stopper.servo.getDirection());
 
-        Dashboard.sendTelemetryPacket(posepacket);
-        Dashboard.updateConfig();
-    }
 
 
 
