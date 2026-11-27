@@ -7,6 +7,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLResultTypes.FiducialResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystem.DriveTrain;
@@ -22,6 +23,7 @@ public class HiveAim {
     public static double CAMERA_PITCH_DEGREES = 30; // Positive when aimed up.
     public static double CAMERA_ROLL_DEGREES = 0.0;  // Positive when the right edge is lower.
 
+    private static final String LIMELIGHT_HARDWARE_NAME = "limelight";
     private static final int FIRST_HIVE_TAG = 30;
     private static final int LAST_HIVE_TAG = 45;
     private static final int ANY_CELL = -1;
@@ -29,14 +31,24 @@ public class HiveAim {
     private static final long MAX_FRAME_AGE_MS = 150;
     private static final PoseVelocity2d STOPPED = new PoseVelocity2d(new Vector2d(0.0, 0.0), 0.0);
 
-    private final Limelight3A camera;
+    private Limelight3A camera;
     private int pipeline;
     private int lockedCell = ANY_CELL;
     private double lastFrameTimestamp = Double.NaN;
     private long lastNewFrameNanos;
 
+    public HiveAim() {
+    }
+
     public HiveAim(Limelight3A camera) {
         this.camera = camera;
+    }
+
+    public void init(HardwareMap hardwareMap) {
+        camera = hardwareMap.tryGet(Limelight3A.class, LIMELIGHT_HARDWARE_NAME);
+        lockedCell = ANY_CELL;
+        lastFrameTimestamp = Double.NaN;
+        lastNewFrameNanos = 0;
     }
 
     public void start() {
@@ -54,6 +66,21 @@ public class HiveAim {
     }
 
     public void update(boolean aiming, DriveTrain drive, Telemetry telemetry) {
+        LLResult frame = getFreshFrame();
+        if (!aiming) {
+            lockedCell = ANY_CELL;
+            return;
+        }
+
+        if (frame != null && alignToCell(frame, drive, telemetry)) {
+            return;
+        }
+
+        drive.setDrivePowers(STOPPED);
+        telemetry.addData("Hive aim", camera == null ? "Limelight missing" : "Waiting for Hive tag");
+    }
+
+    private LLResult getFreshFrame() {
         long now = System.nanoTime();
         LLResult frame = camera == null ? null : camera.getLatestResult();
         double frameTimestamp = frame == null ? 0.0 : frame.getTimestamp();
@@ -62,21 +89,13 @@ public class HiveAim {
             lastNewFrameNanos = now;
         }
 
-        if (!aiming) {
-            lockedCell = ANY_CELL;
-            return;
-        }
-
         if (frame != null && frame.isValid() && frame.getPipelineIndex() == pipeline
                 && frameTimestamp == lastFrameTimestamp
                 && frame.getStaleness() <= MAX_FRAME_AGE_MS
-                && now - lastNewFrameNanos <= MAX_FRAME_AGE_MS * 1_000_000L
-                && alignToCell(frame, drive, telemetry)) {
-            return;
+                && now - lastNewFrameNanos <= MAX_FRAME_AGE_MS * 1_000_000L) {
+            return frame;
         }
-
-        drive.setDrivePowers(STOPPED);
-        telemetry.addData("Hive aim", camera == null ? "Limelight missing" : "Waiting for Hive tag");
+        return null;
     }
 
     private boolean alignToCell(LLResult frame, DriveTrain drive, Telemetry telemetry) {
@@ -128,34 +147,31 @@ public class HiveAim {
 
 
     private boolean isTip(int startId,int endId) {
-        LLResult data = camera.getLatestResult();
-        if (data.isValid()) {
+        LLResult data = camera == null ? null : camera.getLatestResult();
+        if (data != null && data.isValid()) {
             for (LLResultTypes.FiducialResult tag : data.getFiducialResults()) {
                 int id = tag.getFiducialId();
                 if (id >= startId && id <=endId) {
                     return true;
                 }
             }
-            return false;
         }
         return false;
     }
-    public boolean isTipRedAudience() {
-        return isTip(30,33);
 
+    public boolean isTipRedAudience() {
+        return isTip(30, 33);
+    }
+
+    public boolean isTipRedScoring() {
+        return isTip(34, 37);
     }
 
     public boolean isTipBlueAudience() {
-        return isTip(38,41);
-
+        return isTip(38, 41);
     }
-        public boolean isTipRedScoring() {
-        return isTip(34,37);
-        }
 
-        public boolean isTipBlueScoring() {
-            return isTip(42,45);
-
-        }
-
+    public boolean isTipBlueScoring() {
+        return isTip(42, 45);
     }
+}
