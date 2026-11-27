@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Subsystem;
 
-
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -11,7 +10,14 @@ import com.seattlesolvers.solverslib.command.SubsystemBase;
 
 public class Transfer extends SubsystemBase {
     private static DcMotor transfer;
-    public void init(HardwareMap hardwareMap ){
+
+    public Transfer() {}
+
+    public Transfer(HardwareMap hardwareMap) {
+        init(hardwareMap);
+    }
+
+    public void init(HardwareMap hardwareMap) {
         transfer = hardwareMap.get(DcMotor.class, "transfer");
         transfer.setDirection(DcMotor.Direction.FORWARD);
     }
@@ -20,54 +26,56 @@ public class Transfer extends SubsystemBase {
         transfer.setPower(1);
     }
 
-    public static class RunTransfer implements Action{
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            transfer.setPower(1);
-            return false;
-        }
-
-        public static Action runTransfer() {
-            return new RunTransfer();
-        }
-    }
-
-
     public void eject() {
         transfer.setPower(-1);
     }
 
-    public static class TransferEject implements Action{
-
-        @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            transfer.setPower(-1);
-            return false;
-        }
-
-        public static Action eject() {
-            return new TransferEject();
-        }
-    }
-
-
-    public void stop(){
+    public void stop() {
         transfer.setPower(0);
     }
 
-    public static class StopTransfer implements Action{
+    // ==================== Actions (Road Runner) ====================
 
+    public class TransferRunningAction implements Action {
         @Override
-        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-            transfer.setPower(0);
+        public boolean run(@NonNull TelemetryPacket packet) {
+            TransferRunning();
+            packet.put("transferPower", 1.0);
             return false;
-        }
-
-        public static Action stop() {
-            return new StopTransfer();
         }
     }
 
+    public class EjectAction implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            eject();
+            packet.put("transferPower", -1.0);
+            return false;
+        }
+    }
 
+    public class StopAction implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            stop();
+            packet.put("transferPower", 0.0);
+            return false;
+        }
+    }
+
+    public Action transferRunningAction() {
+        return new TransferRunningAction();
+    }
+
+    public Action runTransfer() {
+        return new TransferRunningAction();
+    }
+
+    public Action ejectAction() {
+        return new EjectAction();
+    }
+
+    public Action stopAction() {
+        return new StopAction();
+    }
 }

@@ -116,4 +116,81 @@ public class Shooter {
         Dashboard.sendTelemetryPacket(velocityPacket);
         Dashboard.updateConfig();
     }
+
+    // ==================== Actions (Road Runner) ====================
+
+    public class SpinAction implements Action {
+        private final double vel;
+
+        public SpinAction(double vel) {
+            this.vel = vel;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            targetVel = vel;
+            spin(vel);
+            packet.put("shooterVelocity", ShooterL.getVelocity());
+            packet.put("targetVelocity", vel);
+            return false;
+        }
+    }
+
+    public class SetVoltageAction implements Action {
+        private final double power;
+
+        public SetVoltageAction(double power) {
+            this.power = power;
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            setVoltage(power);
+            packet.put("shooterPower", power);
+            return false;
+        }
+    }
+
+    public class StopAction implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            targetVel = 0;
+            stop();
+            packet.put("shooterVelocity", ShooterL != null ? ShooterL.getVelocity() : 0.0);
+            return false;
+        }
+    }
+
+    /** Continuous PIDF action intended to run in parallel with autonomous code. */
+    public class ContinuousAction implements Action {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            if (targetVel > 0) {
+                applyPIDF(targetVel);
+            } else {
+                stop();
+            }
+            if (ShooterL != null) {
+                packet.put("shooterVelocity", ShooterL.getVelocity());
+            }
+            packet.put("targetVelocity", targetVel);
+            return true;
+        }
+    }
+
+    public Action continuousAction() {
+        return new ContinuousAction();
+    }
+
+    public Action spinAction(double vel) {
+        return new SpinAction(vel);
+    }
+
+    public Action setVoltageAction(double power) {
+        return new SetVoltageAction(power);
+    }
+
+    public Action stopAction() {
+        return new StopAction();
+    }
 }
