@@ -80,7 +80,7 @@ public class AutoRedShootMoveShootPark extends LinearOpMode {
                 ActionIntakeFromGarden,
                 new SleepAction(1),
                 ActionScoreIntakeFromGurden,
-                new ConditionalAction(AutoRedShootMoveShootPark::isHiveUp, ActionHiveUp, ActionHiveDown)),
+                new ConditionalAction(()->robotSystem.aprilTag.isRedAudience(), ActionHiveUp, ActionHiveDown)),
                 robotSystem.intake.stopAction(),
                 robotSystem.shooter.stopAction()
         ));
@@ -131,10 +131,6 @@ ScoreIntakeFromGarden=
     ActionMoveSecondPosition = MoveSecondPosition.build();
     ActionPark = Park.build();
     ActionParkTwoShots = ParkTwoShots.build();
-  }
-
-  public static boolean isHiveUp() {
-    return false;
   }
 
   public Action ActionShoot(RobotSystem robotSystem) {

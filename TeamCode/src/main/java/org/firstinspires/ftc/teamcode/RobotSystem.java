@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
 import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
+import org.firstinspires.ftc.teamcode.vision.AprilTag;
 
 /**
  * מחלקה מרכזית המרכזת ומאתחלת את כל ה-Subsystems של הרובוט,
@@ -20,6 +21,7 @@ public class RobotSystem {
     public Shooter shooter;
     public Stopper stopper;
     public Transfer transfer;
+    public AprilTag aprilTag;
 
     public void init(HardwareMap hardwareMap) {
 //        driveTrain = new DriveTrain();
@@ -36,6 +38,9 @@ public class RobotSystem {
 
         transfer = new Transfer();
         transfer.init(hardwareMap);
+
+        aprilTag  = new AprilTag ();
+        aprilTag.init(hardwareMap);
     }
 
 

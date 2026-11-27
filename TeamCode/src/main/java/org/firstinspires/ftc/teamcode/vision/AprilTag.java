@@ -22,19 +22,20 @@ public class AprilTag {
     public boolean seeID(int ID){
         LLResult result = limelight.getLatestResult();
 
-        if(isWorking(result)) {
+        if(isResultValid(result)) {
             List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
             for(LLResultTypes.FiducialResult fiducial: fiducials){
                 int resultID = fiducial.getFiducialId();
 
-                return ID == resultID;
-
+                if(ID == resultID){
+                    return true;
+                }
             }
             return false;
         }
         return false;
     }
-    public static boolean isWorking(LLResult result){
+    public static boolean isResultValid(LLResult result){
         return result != null && result.isValid();
     }
     public boolean isBlueAudience(){
