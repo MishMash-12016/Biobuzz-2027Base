@@ -7,9 +7,8 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.seattlesolvers.solverslib.command.SubsystemBase;
 
-public class Transfer extends SubsystemBase {
+public class Transfer   {
     private static DcMotor transfer;
     public void init(HardwareMap hardwareMap ){
         transfer = hardwareMap.get(DcMotor.class, "transfer");

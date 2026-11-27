@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Opmode.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Subsystem.Intake;
 import org.firstinspires.ftc.teamcode.Subsystem.Shooter;
 import org.firstinspires.ftc.teamcode.Subsystem.Stopper;
 import org.firstinspires.ftc.teamcode.Subsystem.Transfer;
+import org.firstinspires.ftc.teamcode.vision.HiveAim;
 
 @TeleOp
 @Config
@@ -36,51 +38,64 @@ public class ManualDrive extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry , FtcDashboard.getInstance().getTelemetry());
 
-        waitForStart();
+        HiveAim hiveAim = new HiveAim(hardwareMap.tryGet(Limelight3A.class, "limelight"));
+        try {
+            hiveAim.start();
+            waitForStart();
 
-        while (opModeIsActive()) {
-            // Drive Train
-            dt.fieldOrientedDrive(gamepad1);
-            if (gamepad1.options) {
-                dt.resetHeading();
+            while (opModeIsActive()) {
+                // Drive Train
+                boolean alignToHive = gamepad1.x;
+                hiveAim.update(alignToHive, dt, telemetry);
+                if (alignToHive) {
+                    dt.update();
+                } else {
+                    dt.fieldOrientedDrive(gamepad1);
+                }
+                if (gamepad1.options) {
+                    dt.resetHeading();
+                }
+
+                // Intake + Transfer
+                if (gamepad1.right_bumper) {
+                    Intake.collect();
+                    transfer.TransferRunning();
+                } else if (gamepad1.left_bumper){
+                    intake.eject();
+                    transfer.eject();
+                } else {
+                    intake.stop();
+                    transfer.stop();
+                }
+
+
+
+                // Shooter
+                shooter.spin(shooter.targetVel);
+                if (gamepad1.right_trigger_pressed ){
+                    shooter.targetVel = 1165;}
+                if (gamepad1.left_trigger_pressed){
+                    shooter.targetVel = 0;
+
+                }
+
+                // Stopper
+                if (gamepad1.dpad_up) {
+                    stopper.up();
+                }
+                if (gamepad1.dpad_down) {
+                    stopper.down();
+                }
+
+                shooter.printVelocity();
+
+                telemetry.addData("X",gamepad1.left_stick_x);
+                telemetry.addData("Y",gamepad1.left_stick_y);
+                telemetry.update();
             }
-
-            // Intake + Transfer
-            if (gamepad1.right_bumper) {
-                Intake.collect();
-                transfer.TransferRunning();
-            } else if (gamepad1.left_bumper){
-                intake.eject();
-                transfer.eject();
-            } else {
-                intake.stop();
-                transfer.stop();
-            }
-
-
-
-            // Shooter
-            shooter.spin(shooter.targetVel);
-            if (gamepad1.right_trigger_pressed ){
-                shooter.targetVel = 1165;}
-            if (gamepad1.left_trigger_pressed){
-                shooter.targetVel = 0;
-
-            }
-
-            // Stopper
-            if (gamepad1.dpad_up) {
-                stopper.up();
-            }
-            if (gamepad1.dpad_down) {
-                stopper.down();
-            }
-
-            shooter.printVelocity();
-
-            telemetry.addData("X",gamepad1.left_stick_x);
-            telemetry.addData("Y",gamepad1.left_stick_y);
-            telemetry.update();
+        } finally {
+            dt.driveRobotCentric(0.0, 0.0, 0.0);
+            hiveAim.stop();
         }
     }
 }

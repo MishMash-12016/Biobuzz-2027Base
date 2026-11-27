@@ -14,7 +14,7 @@ public class Stopper  {
     private static Servo servo;
     private FtcDashboard Dashboard;
 
-    public static double down = 0.6;
+    public static double down = 0.8;
     public static double up = 0.9;
 
     public void init(HardwareMap hardwareMap ){

@@ -2,6 +2,11 @@ package org.firstinspires.ftc.teamcode.Subsystem;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.MecanumKinematics;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.PoseVelocity2dDual;
+import com.acmerobotics.roadrunner.Time;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -14,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class DriveTrain extends SubsystemBase {
+    private static final MecanumKinematics POWER_KINEMATICS = new MecanumKinematics(1.0);
     public static double lastHeading;
 
     private DcMotor frontLeft;
@@ -25,11 +31,7 @@ public class DriveTrain extends SubsystemBase {
     private FtcDashboard Dashboard;
 
     public void init(HardwareMap hardwareMap) {
-        // Initialize motors
-        frontLeft = hardwareMap.get(DcMotor.class,  "fl");
-        frontRight = hardwareMap.get(DcMotor.class, "fr");
-        backLeft = hardwareMap.get(DcMotor.class,   "bl");
-        backRight = hardwareMap.get(DcMotor.class,  "br");
+        initDriveMotors(hardwareMap);
         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         if (lastHeading != 0.0) {
             pinpoint.setHeading(lastHeading, AngleUnit.DEGREES);
@@ -37,6 +39,14 @@ public class DriveTrain extends SubsystemBase {
         }
 
         configurePinpoint();
+    }
+
+    public void initDriveMotors(HardwareMap hardwareMap) {
+        // Initialize motors
+        frontLeft = hardwareMap.get(DcMotor.class,  "fl");
+        frontRight = hardwareMap.get(DcMotor.class, "fr");
+        backLeft = hardwareMap.get(DcMotor.class,   "bl");
+        backRight = hardwareMap.get(DcMotor.class,  "br");
 
         // TODO Change
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -49,6 +59,7 @@ public class DriveTrain extends SubsystemBase {
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
+
     public void configurePinpoint() {
         // Set odometry pod offsets relative to the tracking center (in millimeters)
         // X: sideways distance (Left is positive), Y: forward distance (Forward is positive)
@@ -75,50 +86,39 @@ public class DriveTrain extends SubsystemBase {
     }
 
     public void drive(Gamepad gamepad) {
-        double y = -gamepad.left_stick_y;
-        double x = gamepad.left_stick_x;
-        double rx = gamepad.right_stick_x;
+        driveRobotCentric(gamepad.left_stick_x, -gamepad.left_stick_y, gamepad.right_stick_x);
+    }
 
-        // Denominator scales powers downPose if any individual motor exceeds 1.0 magnitude
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
+    public void driveRobotCentric(double strafeRightPower, double driveForwardPower, double turnRightPower) {
+        setDrivePowers(new PoseVelocity2d(new Vector2d(driveForwardPower, -strafeRightPower), -turnRightPower));
+    }
 
-        double frontLeftPower = (y + x + rx) / denominator;
-        double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
-
-        frontLeft.setPower(frontLeftPower);
-        backLeft.setPower(backLeftPower);
-        frontRight.setPower(frontRightPower);
-        backRight.setPower(backRightPower);
+    public void setDrivePowers(PoseVelocity2d powers) {
+        MecanumKinematics.WheelVelocities<Time> wheels =
+                POWER_KINEMATICS.inverse(PoseVelocity2dDual.constant(powers, 1));
+        double normalization = Math.max(1.0,
+                Math.abs(powers.linearVel.x) + Math.abs(powers.linearVel.y) + Math.abs(powers.angVel));
+        frontLeft.setPower(wheels.leftFront.value() / normalization);
+        backLeft.setPower(wheels.leftBack.value() / normalization);
+        frontRight.setPower(wheels.rightFront.value() / normalization);
+        backRight.setPower(wheels.rightBack.value() / normalization);
     }
 
     public void fieldOrientedDrive(Gamepad gamepad) {
-        double y,x,rx;
-        if (Math.abs(gamepad.left_stick_y) > 0.1)  {y = -gamepad.left_stick_y;}   else {y = 0;}
-        if (Math.abs(gamepad.left_stick_x) > 0.1)  {x =  gamepad.left_stick_x;}   else {x = 0;}
-        if (Math.abs(gamepad.right_stick_x)> 0.1)  {rx = gamepad.right_stick_x;}  else {rx = 0;}
+        double fieldForwardPower = Math.abs(gamepad.left_stick_y) > 0.1 ? -gamepad.left_stick_y : 0.0;
+        double fieldRightPower = Math.abs(gamepad.left_stick_x) > 0.1 ? gamepad.left_stick_x : 0.0;
+        double turnRightPower = Math.abs(gamepad.right_stick_x) > 0.1 ? gamepad.right_stick_x : 0.0;
 
         // Get the current robot heading from the Pinpoint in radians
-        double botHeading = pinpoint.getPosition().getHeading(AngleUnit.RADIANS);
+        double robotHeadingRadians = pinpoint.getPosition().getHeading(AngleUnit.RADIANS);
 
         // Rotate the movement vector by the negative bot heading for field-centric control
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        double robotStrafeRightPower = fieldRightPower * Math.cos(-robotHeadingRadians)
+                - fieldForwardPower * Math.sin(-robotHeadingRadians);
+        double robotDriveForwardPower = fieldRightPower * Math.sin(-robotHeadingRadians)
+                + fieldForwardPower * Math.cos(-robotHeadingRadians);
 
-        // Denominator scaling to keep powers within [-1, 1]
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1.0);
-
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
-
-        frontLeft.setPower(frontLeftPower);
-        backLeft.setPower(backLeftPower);
-        frontRight.setPower(frontRightPower);
-        backRight.setPower(backRightPower);
-
+        driveRobotCentric(robotStrafeRightPower, robotDriveForwardPower, turnRightPower);
         pinpoint.update();
     }
 
