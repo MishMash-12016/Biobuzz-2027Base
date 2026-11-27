@@ -127,65 +127,34 @@ public class HiveAim {
 
 
 
-    private boolean isTipBlue() {
+    private boolean isTip(int startId,int endId) {
         LLResult data = camera.getLatestResult();
         if (data.isValid()) {
-            boolean hiveAudience=false;
-            boolean hiveScoring =false;
-
             for (LLResultTypes.FiducialResult tag : data.getFiducialResults()) {
                 int id = tag.getFiducialId();
-                if (id >= 38 && id <= 41) {
-                    hiveAudience = true;
-                } else if (id >= 42 && id <= 45) {
-                    hiveScoring = true;
+                if (id >= startId && id <=endId) {
+                    return true;
                 }
             }
-            if (hiveAudience==hiveScoring) {
-                return false;
-            }
-            if (hiveAudience)
-                return true;
-        }
-        return false;
-    }
-    private boolean isTipRed() {
-        LLResult data = camera.getLatestResult();
-        if (data.isValid()&& data!=null) {
-            boolean hiveAudience=false;
-            boolean hiveScoring =false;
-
-            for (LLResultTypes.FiducialResult tag : data.getFiducialResults()) {
-                int id = tag.getFiducialId();
-                if (id >= 30 && id <= 33) {
-                    hiveAudience = true;
-                } else if (id >= 34 && id <= 37) {
-                    hiveScoring = true;
-                }
-            }
-            if (hiveAudience==hiveScoring) {
-                return false;
-            }
-            if (hiveAudience)
-                return true;
+            return false;
         }
         return false;
     }
     public boolean isTipRedAudience() {
-        return isTipRed()==true;
+        return isTip(30,33);
 
     }
 
     public boolean isTipBlueAudience() {
-        return isTipBlue()==true;
+        return isTip(38,41);
 
     }
         public boolean isTipRedScoring() {
-        return isTipRed()==false;
+        return isTip(34,37);
         }
 
         public boolean isTipBlueScoring() {
-            return isTipBlue()==false;
+            return isTip(42,45);
 
         }
 
